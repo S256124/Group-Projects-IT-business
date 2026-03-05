@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FoodFlix</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="top">
+    <button class="iconBtn" title="Menu">☰</button>
+    <div class="logo">FOOD<span>FLIX</span></div>
+    <button class="iconBtn" title="Profile">👤</button>
+  </header>
+
+  <!-- Front page: choose 1 of 3 -->
+  <main class="wrap">
+    <section class="choose">
+      <h1 class="chooseTitle">Choose a section</h1>
+
+      <div class="chooseGrid">
+        <button class="choice" data-page="inspiration">
+          <div class="choiceTag">INSPIRATION</div>
+          <div class="choiceSub">Ideas to get started</div>
+        </button>
+
+        <button class="choice" data-page="top10">
+          <div class="choiceTag">TOP 10</div>
+          <div class="choiceSub">Most popular recipes</div>
+        </button>
+
+        <button class="choice" data-page="yourchoice">
+          <div class="choiceTag">YOUR CHOICE</div>
+          <div class="choiceSub">Your saved recipes</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Selected section (recipes appear here) -->
+    <section class="section" id="section" hidden>
+      <div class="sectionHead">
+        <h2 id="sectionTitle">—</h2>
+        <div class="sectionRight">
+          <input id="q" class="search" placeholder="Search..." />
+          <button id="clearList" class="btn dark" hidden>Clear</button>
+        </div>
+      </div>
+
+      <!-- Option 2: hover updates preview strip -->
+      <div id="feature" class="feature">
+        <div><span>Preview:</span> <strong id="fTitle">—</strong></div>
+        <div id="fDesc">Hover a recipe to preview</div>
+        <div class="mini">
+          <span id="fTime" class="badge">—</span>
+          <span id="fDiff" class="badge">—</span>
+          <span id="fRate" class="badge">★ —</span>
+        </div>
+      </div>
+
+      <!-- Vertical list (scroll up/down) -->
+      <div id="list" class="vlist"></div>
+      <p id="empty" class="empty" hidden>No items yet. Open a recipe and press “+ Your Choice”.</p>
+
+      <div class="backRow">
+        <button id="backBtn" class="btn dark">← Back to sections</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Recipe modal -->
+  <div id="recipeModal" class="modal" aria-hidden="true">
+    <div class="backdrop" data-close="1"></div>
+    <div class="panel">
+      <button class="x" data-close="1">✕</button>
+
+      <div class="mTop">
+        <div id="mPoster" class="mPoster"></div>
+        <div>
+          <h3 id="mTitle" class="mTitle">—</h3>
+          <div class="pills">
+            <span id="mTime" class="pill">—</span>
+            <span id="mDiff" class="pill">—</span>
+            <span id="mTags" class="pill">—</span>
+          </div>
+          <p id="mDesc" class="mDesc">—</p>
+          <div class="actions">
+            <button id="toggleList" class="btn red">+ Your Choice</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mBottom">
+        <div class="box">
+          <h4>Ingredients</h4>
+          <ul id="mIng"></ul>
+        </div>
+        <div class="box">
+          <h4>Rate</h4>
+          <div id="stars" class="stars"></div>
+          <div id="note" class="note"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
