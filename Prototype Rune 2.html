@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FoodFlix</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="topLeft"></div>
+
+    <button id="homeLogo" class="logoBtn" type="button" aria-label="Gå til forsiden">
+      FOOD<span>FLIX</span>
+    </button>
+
+    <nav class="topRight" aria-label="Top menu">
+      <div class="langWrap">
+        <button id="langBtn" class="flagBtn" type="button" aria-label="Vælg sprog">
+          🇩🇰
+        </button>
+
+        <div id="langDropdown" class="langDropdown" hidden>
+          <button class="langOption" data-lang="da" type="button">🇩🇰 Dansk</button>
+          <button class="langOption" data-lang="en" type="button">🇬🇧 English</button>
+        </div>
+      </div>
+
+      <div class="userWrap">
+        <button id="accountBtn" class="topLoginBtn" type="button" aria-label="Log ind">Log ind</button>
+
+        <div id="userDropdown" class="userDropdown" hidden>
+          <p id="userStatus" class="userStatus">Ikke logget ind</p>
+
+          <label class="userLabel" for="emailInput">E-mail</label>
+          <input id="emailInput" class="userInput" type="email" placeholder="E-mail" />
+
+          <label class="userLabel" for="passwordInput">Adgangskode</label>
+          <input id="passwordInput" class="userInput" type="password" placeholder="Adgangskode" />
+
+          <div class="userButtons">
+            <button id="createProfileBtn" class="smallActionBtn" type="button">Opret profil</button>
+            <button id="loginBtn" class="smallActionBtn redMini" type="button">Log ind</button>
+          </div>
+
+          <button id="logoutBtn" class="logoutBtn" type="button">Log ud</button>
+
+          <p id="userMessage" class="userMessage"></p>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="choose" id="choose" aria-labelledby="chooseTitle">
+      <h1 class="chooseTitle" id="chooseTitle">Vælg en sektion</h1>
+
+      <nav class="chooseGrid" aria-label="Vælg opskriftssektion">
+        <button class="choice" data-page="inspiration" type="button">
+          <strong class="choiceTag">INSPIRATION</strong>
+          <span class="choiceSub">Idéer til at komme i gang</span>
+        </button>
+
+        <button class="choice" data-page="top10" type="button">
+          <strong class="choiceTag">TOP 10</strong>
+          <span class="choiceSub">Mest populære opskrifter</span>
+        </button>
+
+        <button class="choice" data-page="yourchoice" type="button">
+          <strong class="choiceTag">YOUR CHOICE</strong>
+          <span class="choiceSub">Dine gemte opskrifter</span>
+        </button>
+      </nav>
+
+      <section class="frontSearchBox" aria-labelledby="frontSearchHeading">
+        <h2 id="frontSearchHeading" class="srOnly">Søg efter opskrifter</h2>
+        <p class="frontSearchText">
+          Klar til at finde en opskrift? Søg efter navn eller ingredienser.
+        </p>
+
+        <form class="frontSearchBar" id="frontSearchForm">
+          <label for="frontSearch" class="srOnly">Søg efter opskrifter</label>
+          <input id="frontSearch" type="text" placeholder="Søg efter opskrifter..." />
+          <button id="frontSearchBtn" type="submit">Søg</button>
+        </form>
+      </section>
+    </section>
+
+    <section class="section" id="section" hidden aria-labelledby="sectionTitle">
+      <header class="sectionHead">
+        <h2 id="sectionTitle">—</h2>
+
+        <form class="sectionRight" id="sectionSearchForm">
+          <label for="q" class="srOnly">Søg i denne sektion</label>
+          <input id="q" class="search" placeholder="Søg i denne sektion..." />
+          <button id="clearList" class="btn dark" hidden type="button">Clear</button>
+        </form>
+      </header>
+
+      <aside id="feature" class="feature" aria-label="Preview">
+        <p><span>Preview:</span> <strong id="fTitle">—</strong></p>
+        <p id="fDesc">Hold musen over en opskrift for at se preview</p>
+
+        <ul class="mini" aria-label="Preview-information">
+          <li id="fTime" class="badge">—</li>
+          <li id="fDiff" class="badge">—</li>
+          <li id="fRate" class="badge">★ —</li>
+        </ul>
+      </aside>
+
+      <section aria-labelledby="resultsHeading">
+        <h3 id="resultsHeading" class="srOnly">Opskrifter</h3>
+        <ul id="list" class="vlist"></ul>
+        <p id="empty" class="empty" hidden>Ingen opskrifter fundet.</p>
+      </section>
+
+      <nav class="backRow" aria-label="Tilbage navigation">
+        <button id="backBtn" class="btn dark" type="button">← Tilbage til forsiden</button>
+      </nav>
+    </section>
+  </main>
+
+  <section id="recipeModal" class="modal" aria-hidden="true">
+    <button class="backdrop" data-close="1" aria-label="Luk vindue"></button>
+
+    <article class="panel" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+      <button class="x" data-close="1" type="button" aria-label="Luk">✕</button>
+
+      <header class="mTop">
+        <figure id="mPoster" class="mPoster"></figure>
+
+        <section>
+          <h3 id="mTitle" class="mTitle">—</h3>
+
+          <ul class="pills" aria-label="Opskriftsinformation">
+            <li id="mTime" class="pill">—</li>
+            <li id="mDiff" class="pill">—</li>
+            <li id="mTags" class="pill">—</li>
+          </ul>
+
+          <p id="mDesc" class="mDesc">—</p>
+
+          <nav class="actions" aria-label="Opskriftshandlinger">
+            <button id="toggleList" class="btn red" type="button">+ Your Choice</button>
+          </nav>
+        </section>
+      </header>
+
+      <section class="mBottom">
+        <article class="box">
+          <h4>Ingredienser</h4>
+          <ul id="mIng"></ul>
+        </article>
+
+        <article class="box">
+          <h4>Vurdering</h4>
+          <div id="stars" class="stars"></div>
+          <p id="note" class="note"></p>
+        </article>
+      </section>
+    </article>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
