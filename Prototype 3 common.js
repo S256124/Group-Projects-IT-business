@@ -1,0 +1,254 @@
+let currentLang = localStorage.getItem(LS_LANG) || "da";
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+const byId = (id) => RECIPES.find(r => r.id === id);
+
+function t(key){
+  return TEXT[currentLang][key] || key;
+}
+
+function get(k, d){
+  try{
+    return JSON.parse(localStorage.getItem(k)) ?? d;
+  }catch{
+    return d;
+  }
+}
+
+function set(k, v){
+  localStorage.setItem(k, JSON.stringify(v));
+}
+
+function rate(id){
+  return get(LS_RATE, {})[id] || 0;
+}
+
+function inList(id){
+  return get(LS_LIST, []).includes(id);
+}
+
+function posterStyle(r){
+  const h = r.hue || 0;
+  return `background:
+    linear-gradient(135deg, rgba(229,9,20,.75), rgba(0,0,0,.35)),
+    radial-gradient(420px 160px at 30% 20%, hsla(${h},90%,60%,.22), transparent 60%);`;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"]/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;"
+  }[c]));
+}
+
+/* language */
+function updateFlagButton(){
+  const btn = $("#langBtn");
+  if(btn){
+    btn.textContent = currentLang === "da" ? "🇩🇰" : "🇬🇧";
+  }
+}
+
+function toggleLangDropdown(){
+  const dd = $("#langDropdown");
+  if(dd) dd.hidden = !dd.hidden;
+}
+
+function closeLangDropdown(){
+  const dd = $("#langDropdown");
+  if(dd) dd.hidden = true;
+}
+
+/* user */
+function getUsers(){
+  return get(LS_USERS, []);
+}
+
+function setUsers(users){
+  set(LS_USERS, users);
+}
+
+function getActiveUser(){
+  return localStorage.getItem(LS_ACTIVE_USER) || "";
+}
+
+function setActiveUser(email){
+  localStorage.setItem(LS_ACTIVE_USER, email);
+}
+
+function clearActiveUser(){
+  localStorage.removeItem(LS_ACTIVE_USER);
+}
+
+function toggleUserDropdown(){
+  const dd = $("#userDropdown");
+  if(dd) dd.hidden = !dd.hidden;
+}
+
+function closeUserDropdown(){
+  const dd = $("#userDropdown");
+  if(dd) dd.hidden = true;
+}
+
+function updateUserUI(){
+  const activeUser = getActiveUser();
+  const status = $("#userStatus");
+  const message = $("#userMessage");
+  const button = $("#accountBtn");
+
+  if(status){
+    status.textContent = activeUser
+      ? `${t("userLoggedIn")} ${activeUser}`
+      : t("userLoggedOut");
+  }
+
+  if(button){
+    button.textContent = t("login");
+  }
+
+  if(message && !message.textContent){
+    message.textContent = "";
+  }
+}
+
+function createProfile(){
+  const email = $("#emailInput")?.value.trim();
+  const password = $("#passwordInput")?.value.trim();
+  const message = $("#userMessage");
+
+  if(!email || !password){
+    if(message) message.textContent = t("fillFields");
+    return;
+  }
+
+  const users = getUsers();
+  const exists = users.find(u => u.email === email);
+
+  if(exists){
+    if(message) message.textContent = t("createFail");
+    return;
+  }
+
+  users.push({ email, password });
+  setUsers(users);
+  if(message) message.textContent = t("createSuccess");
+}
+
+function loginUser(){
+  const email = $("#emailInput")?.value.trim();
+  const password = $("#passwordInput")?.value.trim();
+  const message = $("#userMessage");
+
+  if(!email || !password){
+    if(message) message.textContent = t("fillFields");
+    return;
+  }
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if(!user){
+    if(message) message.textContent = t("loginFail");
+    return;
+  }
+
+  setActiveUser(email);
+  if(message) message.textContent = t("loginSuccess");
+  updateUserUI();
+}
+
+function logoutUser(){
+  clearActiveUser();
+  const message = $("#userMessage");
+  if(message) message.textContent = t("loggedOutMessage");
+  updateUserUI();
+}
+
+function applySharedLanguage(){
+  document.documentElement.lang = currentLang;
+  updateFlagButton();
+
+  const emailInput = $("#emailInput");
+  const passwordInput = $("#passwordInput");
+  const labels = $$(".userLabel");
+
+  if(emailInput) emailInput.placeholder = t("email");
+  if(passwordInput) passwordInput.placeholder = t("password");
+  if(labels[0]) labels[0].textContent = t("email");
+  if(labels[1]) labels[1].textContent = t("password");
+
+  const createBtn = $("#createProfileBtn");
+  const loginBtn = $("#loginBtn");
+  const logoutBtn = $("#logoutBtn");
+
+  if(createBtn) createBtn.textContent = t("createProfile");
+  if(loginBtn) loginBtn.textContent = t("login");
+  if(logoutBtn) logoutBtn.textContent = t("logout");
+
+  updateUserUI();
+}
+
+function setupSharedEvents(){
+  const homeLogo = $("#homeLogo");
+  if(homeLogo){
+    homeLogo.onclick = () => {
+      window.location.href = "index.html";
+    };
+  }
+
+  const langBtn = $("#langBtn");
+  if(langBtn){
+    langBtn.onclick = (e) => {
+      e.stopPropagation();
+      closeUserDropdown();
+      toggleLangDropdown();
+    };
+  }
+
+  $$(".langOption").forEach(btn => {
+    btn.onclick = () => {
+      currentLang = btn.dataset.lang;
+      localStorage.setItem(LS_LANG, currentLang);
+      applySharedLanguage();
+
+      if(typeof applyPageLanguage === "function"){
+        applyPageLanguage();
+      }
+
+      closeLangDropdown();
+    };
+  });
+
+  const accountBtn = $("#accountBtn");
+  if(accountBtn){
+    accountBtn.onclick = (e) => {
+      e.stopPropagation();
+      closeLangDropdown();
+      toggleUserDropdown();
+    };
+  }
+
+  const createBtn = $("#createProfileBtn");
+  const loginBtn = $("#loginBtn");
+  const logoutBtn = $("#logoutBtn");
+
+  if(createBtn) createBtn.onclick = createProfile;
+  if(loginBtn) loginBtn.onclick = loginUser;
+  if(logoutBtn) logoutBtn.onclick = logoutUser;
+
+  document.addEventListener("click", (e) => {
+    if(!e.target.closest(".langWrap")){
+      closeLangDropdown();
+    }
+
+    if(!e.target.closest(".userWrap")){
+      closeUserDropdown();
+    }
+  });
+}
+
+applySharedLanguage();
+setupSharedEvents();
